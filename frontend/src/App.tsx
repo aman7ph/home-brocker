@@ -4,9 +4,8 @@ import { RouerInt } from "./types";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
-import SiginIn from "./pages/SiginIn";
-import SiginUp from "./pages/SiginUp";
-import Header from "./components/Header";
+import SignIn from "./pages/SiginIn";
+import SignUp from "./pages/SiginUp";
 
 const routes: RouerInt[] = [
   {
@@ -22,12 +21,12 @@ const routes: RouerInt[] = [
     element: <Profile />,
   },
   {
-    path: "/siginin",
-    element: <SiginIn />,
+    path: "/signin",
+    element: <SignIn />,
   },
   {
-    path: "/siginup",
-    element: <SiginUp />,
+    path: "/signup",
+    element: <SignUp />,
   },
 ];
 
