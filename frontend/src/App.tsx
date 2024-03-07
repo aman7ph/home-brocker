@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Profile from "./pages/Profile";
 import SiginIn from "./pages/SiginIn";
 import SiginUp from "./pages/SiginUp";
+import Header from "./components/Header";
 
 const routes: RouerInt[] = [
   {
@@ -35,7 +36,7 @@ const router = createBrowserRouter(routes);
 const App: React.FC = () => {
   return (
     <>
-      <RouterProvider router={router} />
+      <RouterProvider router={router}></RouterProvider>
     </>
   );
 };

@@ -1,0 +1,5 @@
+#3370aa-p -cyan-700
+#7ca3c4-s -slate-400
+#e7edf2-b -slate-200
+#fcfcfc-w -zinc-50
+
