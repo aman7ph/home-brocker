@@ -47,4 +47,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-constant.txt
+.env

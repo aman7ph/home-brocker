@@ -1,8 +1,16 @@
 import express from "express";
-import mongoose from "mongoose";
+import dotenv from "dotenv";
+import DbConnection from "./config/db";
+
+import userRouter from "./routes/user.router";
+
+dotenv.config();
 
 const app: express.Application = express();
 
-app.use(express.json());
+DbConnection();
 
-app.listen(8000, () => console.log("listening on port 8000"));
+app.use(express.json());
+app.use("/api/user", userRouter);
+
+app.listen(8080, () => console.log("listening on port 8080"));
