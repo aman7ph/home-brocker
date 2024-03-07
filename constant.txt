@@ -3,3 +3,4 @@
 #e7edf2-b -slate-200
 #fcfcfc-w -zinc-50
 
+is this componet is correct at typescript stand point it is tsx file
