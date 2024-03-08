@@ -36,7 +36,7 @@ const Header: React.FC = () => {
               About
             </li>
           </Link>
-          <Link to="/siginin">
+          <Link to="/signin">
             <li className=" hover:underline cursor-pointer">Sign in</li>
           </Link>
         </ul>

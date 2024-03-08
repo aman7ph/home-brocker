@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpInterface } from "../types";
 
 const SignUp: React.FC = () => {
@@ -11,6 +11,9 @@ const SignUp: React.FC = () => {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -18,10 +21,35 @@ const SignUp: React.FC = () => {
       [e.target.id]: e.target.value,
     });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      setIsLoading(true);
+      const res = await fetch("http://localhost:8080/api/user/signup", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success === false) {
+        setError(data.message);
+        setIsLoading(false);
+        return;
+      }
+      setError(null);
+      setIsLoading(false);
+      navigate("/signin");
+    } catch (error: any) {
+      setError(error.message);
+      setIsLoading(false);
+    }
   };
+
   return (
     <div>
       <Header />
@@ -125,10 +153,11 @@ const SignUp: React.FC = () => {
                   ></input>
                 </div>
                 <button
+                  disabled={isLoading}
                   type="submit"
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                  Create an account
+                  {isLoading ? "Loading...." : "Create an account"}
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
@@ -140,6 +169,9 @@ const SignUp: React.FC = () => {
                   </Link>
                 </p>
               </form>
+              {error && (
+                <p className="text-red-500 mt-5">somthing went wrong</p>
+              )}
             </div>
           </div>
         </div>

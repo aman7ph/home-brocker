@@ -1,8 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signInInterface } from "../types";
 
 const SignIn: React.FC = () => {
+  const [formData, setFormData] = useState<signInInterface>({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      setIsLoading(true);
+      const res = await fetch("http://localhost:8080/api/user/signin", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success === false) {
+        setError(data.message);
+        setIsLoading(false);
+        return;
+      }
+      setError(null);
+      setIsLoading(false);
+      navigate("/");
+    } catch (error: any) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div>
       {" "}
@@ -14,7 +59,7 @@ const SignIn: React.FC = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Login
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="email"
@@ -23,6 +68,8 @@ const SignIn: React.FC = () => {
                     Your email
                   </label>
                   <input
+                    onChange={handleChange}
+                    value={formData.email}
                     type="email"
                     name="email"
                     id="email"
@@ -40,6 +87,8 @@ const SignIn: React.FC = () => {
                     Password
                   </label>
                   <input
+                    onChange={handleChange}
+                    value={formData.password}
                     type="password"
                     name="password"
                     id="password"
@@ -50,10 +99,11 @@ const SignIn: React.FC = () => {
                 </div>
 
                 <button
+                  disabled={isLoading}
                   type="submit"
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                  Login
+                  {isLoading ? "Loading...." : "Login"}
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
@@ -65,6 +115,7 @@ const SignIn: React.FC = () => {
                   </Link>
                 </p>
               </form>
+              {error && <p className="text-red-500 mt-5">{error}</p>}
             </div>
           </div>
         </div>
