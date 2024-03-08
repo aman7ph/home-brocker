@@ -2,8 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const Header: React.FC = () => {
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
   return (
     <header className="bg-zinc-50 shadow-md">
       <div className="flex gap-5 flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto p-3">
@@ -36,8 +40,16 @@ const Header: React.FC = () => {
               About
             </li>
           </Link>
-          <Link to="/signin">
-            <li className=" hover:underline cursor-pointer">Sign in</li>
+          <Link to="/profile">
+            {currentUser ? (
+              <img
+                className="rounded-full h-7 w-7 object-cover"
+                src={currentUser.avatar}
+                alt="profile"
+              />
+            ) : (
+              <li className=" hover:underline cursor-pointer">Sign in</li>
+            )}
           </Link>
         </ul>
       </div>

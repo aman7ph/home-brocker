@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SiginIn";
 import SignUp from "./pages/SiginUp";
+import PrivateRoute from "./components/PrivateRoute";
 
 const routes: RouerInt[] = [
   {
@@ -17,8 +18,14 @@ const routes: RouerInt[] = [
     element: <About />,
   },
   {
-    path: "/profile",
-    element: <Profile />,
+    path: "",
+    element: <PrivateRoute />,
+    children: [
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
   },
   {
     path: "/signin",
