@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { errorHandler } from "./error";
+import { errorHandler } from "../utils/error";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 
 declare global {
@@ -23,6 +23,7 @@ export const verifyToken = (
   jwt.verify(token, securityKey, (err: VerifyErrors | null, user: any) => {
     if (err) return next(errorHandler(403, "Forbidden"));
     req.user = user;
+    console.log(user);
     next();
   });
 };

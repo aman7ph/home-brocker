@@ -5,6 +5,7 @@ import DbConnection from "./config/db";
 import cors from "cors";
 import authRouter from "./routes/auth.router";
 import userRouter from "./routes/user.router";
+import listingRouter from "./routes/listing.route";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/listing", listingRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   const statusCode = (err as any)?.statusCode || 500;

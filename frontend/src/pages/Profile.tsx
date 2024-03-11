@@ -22,11 +22,13 @@ import {
   signOutUserFailure,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Profile: React.FC = () => {
   const { currentUser, loading, error } = useSelector(
     (state: RootState) => state.user
   );
+
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [filePercentage, setFilePercentage] = useState<number>(0);
@@ -39,6 +41,7 @@ const Profile: React.FC = () => {
     phoneNumber: "",
     password: "",
     avatar: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -50,6 +53,7 @@ const Profile: React.FC = () => {
         phoneNumber: currentUser.phoneNumber,
         password: "",
         avatar: currentUser.avatar,
+        role: currentUser.role,
       });
     }
   }, [currentUser]);
@@ -289,6 +293,14 @@ const Profile: React.FC = () => {
                   >
                     {loading ? "Loading...." : "update"}
                   </button>
+                  {currentUser?.role === "admin" && (
+                    <Link
+                      to={"/creatlisting"}
+                      className="w-full text-white bg-primary-600 mt-5 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 text-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    >
+                      Creat Listing
+                    </Link>
+                  )}
                 </form>
                 <p className="text-red-700 mt-5">{error ? error : ""}</p>
                 <p className="text-green-700 mt-5">

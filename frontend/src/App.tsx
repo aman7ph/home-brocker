@@ -7,6 +7,8 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SiginIn";
 import SignUp from "./pages/SiginUp";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminPrivateRoute from "./components/AdminPrivateRoute";
+import CreatListing from "./pages/CreatListing";
 
 const routes: RouerInt[] = [
   {
@@ -24,6 +26,16 @@ const routes: RouerInt[] = [
       {
         path: "/profile",
         element: <Profile />,
+      },
+    ],
+  },
+  {
+    path: "",
+    element: <AdminPrivateRoute />,
+    children: [
+      {
+        path: "/creatlisting",
+        element: <CreatListing />,
       },
     ],
   },
