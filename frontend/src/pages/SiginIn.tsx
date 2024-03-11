@@ -30,22 +30,21 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       dispatch(signInStart());
-      const res = await fetch("http://localhost:8080/api/user/signin", {
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
       if (data.success === false) {
         dispatch(signInFailure(data.message));
         return;
       }
+
       dispatch(signInSuccess(data));
       navigate("/");
     } catch (error: any) {

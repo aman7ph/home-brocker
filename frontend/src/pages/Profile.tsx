@@ -9,18 +9,51 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-
-interface FormData {
-  avatar?: string;
-}
+import { userInterface } from "../types";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOutUserStart,
+  signOutUserSuccess,
+  signOutUserFailure,
+} from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Profile: React.FC = () => {
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const { currentUser, loading, error } = useSelector(
+    (state: RootState) => state.user
+  );
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [filePercentage, setFilePercentage] = useState<number>(0);
   const [fileUploadError, setFileUploadError] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormData>({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [formData, setFormData] = useState<userInterface>({
+    _id: "",
+    username: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    avatar: "",
+  });
+
+  useEffect(() => {
+    if (currentUser) {
+      setFormData({
+        _id: currentUser._id,
+        username: currentUser.username,
+        email: currentUser.email,
+        phoneNumber: currentUser.phoneNumber,
+        password: "",
+        avatar: currentUser.avatar,
+      });
+    }
+  }, [currentUser]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (file) {
@@ -57,12 +90,82 @@ const Profile: React.FC = () => {
     fileRef.current?.click(); //
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       setFile(files[0]);
     } else {
       setFile(null);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(
+        `http://localhost:8080/api/user/update/${currentUser?._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(formData),
+        }
+      );
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error: any) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeletUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(
+        `http://localhost:8080/api/user/delete/${currentUser?._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess());
+    } catch (error: any) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+  const handleSignOutUser = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch(`http://localhost:8080/api/auth/signout`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(signOutUserSuccess());
+    } catch (error: any) {
+      dispatch(signOutUserFailure(error.message));
     }
   };
 
@@ -79,11 +182,11 @@ const Profile: React.FC = () => {
                 </h1>
                 <form
                   className="space-y-4 md:space-y-6"
-                  // onSubmit={handleSubmit}
+                  onSubmit={handleSubmit}
                 >
                   <input
                     type="file"
-                    onChange={handleChange}
+                    onChange={handleImageChange}
                     ref={fileRef}
                     hidden
                     accept="image/*"
@@ -117,14 +220,13 @@ const Profile: React.FC = () => {
                       username
                     </label>
                     <input
-                      // onChange={handleChange}
-                      //  value={formData.username}
+                      onChange={handleChange}
                       type="text"
                       name="username"
                       id="username"
+                      defaultValue={currentUser?.username}
                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Name"
-                      required
                     ></input>
                   </div>
                   <div>
@@ -135,14 +237,31 @@ const Profile: React.FC = () => {
                       Your email
                     </label>
                     <input
-                      // onChange={handleChange}
-                      // value={formData.email}
+                      onChange={handleChange}
                       type="email"
                       name="email"
                       id="email"
+                      defaultValue={currentUser?.email}
                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="name@company.com"
-                      required
+                    ></input>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      onChange={handleChange}
+                      defaultValue={currentUser?.phoneNumber}
+                      type="text"
+                      name="phoneNumber"
+                      id="phoneNumber"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="0911 --- ---"
                     ></input>
                   </div>
 
@@ -154,31 +273,40 @@ const Profile: React.FC = () => {
                       Password
                     </label>
                     <input
-                      // onChange={handleChange}
-                      // value={formData.password}
+                      onChange={handleChange}
                       type="password"
                       name="password"
                       id="password"
                       placeholder="••••••••"
                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      required
                     ></input>
                   </div>
 
                   <button
-                    // disabled={loading}
+                    disabled={loading}
                     type="submit"
                     className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
-                    update {/* {loading ? "Loading...." : "Login"} */}
+                    {loading ? "Loading...." : "update"}
                   </button>
                 </form>
-                {/* {error && <p className="text-red-500 mt-5">{error}</p>} */}
+                <p className="text-red-700 mt-5">{error ? error : ""}</p>
+                <p className="text-green-700 mt-5">
+                  {updateSuccess ? "User is updated successfully!" : ""}
+                </p>
                 <div className="flex justify-between mt-5">
-                  <span className="text-red-700 cursor-pointer">
+                  <span
+                    onClick={handleDeletUser}
+                    className="text-red-700 cursor-pointer"
+                  >
                     Delete account
                   </span>
-                  <span className="text-red-700 cursor-pointer">Sign out</span>
+                  <span
+                    onClick={handleSignOutUser}
+                    className="text-red-700 cursor-pointer"
+                  >
+                    Sign out
+                  </span>
                 </div>
               </div>
             </div>

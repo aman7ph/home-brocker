@@ -1,56 +1,47 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/user.model";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { userInterface } from "../types";
 import { errorHandler } from "../utils/error";
+import User from "../models/user.model";
 
-const securityKey: string = process.env.JWT_SECURITY_KEY!;
-
-const signUp = async (
-  req: Request<{}, userInterface>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { username, password, email, phoneNumber } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 12);
-  const newUser = new User({
-    username,
-    password: hashedPassword,
-    email,
-    phoneNumber,
-  });
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, "you can only updat your own profile"));
   try {
-    await newUser.save();
-    res.status(201).json("User created successfully");
-  } catch (error) {
-    next(error);
-  }
-};
-
-const signIn = async (
-  req: Request<{}, userInterface>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { email, password } = req.body;
-  try {
-    const ValidateUser = await User.findOne({ email });
-    if (!ValidateUser) return next(errorHandler(404, "user not found"));
-    const validatePassword = bcrypt.compareSync(
-      password,
-      ValidateUser.password
+    if (req.body.password) {
+      req.body.password = bcrypt.hashSync(req.body.password, 12);
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          ...(req.body.password && { password: req.body.password }),
+          avatar: req.body.avatar,
+          phoneNumber: req.body.phoneNumber,
+        },
+      },
+      { new: true }
     );
-    if (!validatePassword) return next(errorHandler(404, "bad cridential"));
-    const token = jwt.sign({ id: ValidateUser._id }, securityKey);
-    const { password: pass, ...rest } = ValidateUser.toObject();
-    res
-      .cookie("access_token", token, { httpOnly: true })
-      .status(200)
-      .json(rest);
+    if (updatedUser) {
+      const { password, ...rest } = updatedUser.toObject();
+      res.status(200).json(rest);
+    } else {
+      return next(errorHandler(401, "unsecsesful update"));
+    }
   } catch (error) {
     next(error);
   }
 };
 
-export { signUp, signIn };
+const deletUser = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, "you can only delet your own acount"));
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.clearCookie("access_token");
+    res.status(200).json("user has been deleted");
+  } catch (error) {}
+};
+
+export { updateUser, deletUser };

@@ -27,16 +27,18 @@ const SignUp: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:8080/api/user/signup", {
+      const res = await fetch("http://localhost:8080/api/auth/signup", {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
       if (data.success === false) {
+        console.log("lllllllllllll");
         setError(data.message);
         setIsLoading(false);
         return;

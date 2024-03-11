@@ -19,8 +19,10 @@ export interface signInInterface {
 }
 
 export interface userInterface {
+  _id: string;
   username: string;
   email: string;
   phoneNumber: string;
+  password: string;
   avatar: string;
 }

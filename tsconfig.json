@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES6"],
