@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../APP/store";
 
 const Header: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);

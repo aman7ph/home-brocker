@@ -9,6 +9,7 @@ import SignUp from "./pages/SiginUp";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
 import CreatListing from "./pages/CreatListing";
+import ViewListings from "./pages/ViewListings";
 
 const routes: RouerInt[] = [
   {
@@ -27,6 +28,10 @@ const routes: RouerInt[] = [
         path: "/profile",
         element: <Profile />,
       },
+      {
+        path: "/viewlisting",
+        element: <ViewListings />,
+      },
     ],
   },
   {
@@ -36,6 +41,10 @@ const routes: RouerInt[] = [
       {
         path: "/creatlisting",
         element: <CreatListing />,
+      },
+      {
+        path: "/viewlisting",
+        element: <ViewListings />,
       },
     ],
   },

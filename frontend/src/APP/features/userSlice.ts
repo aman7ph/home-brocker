@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { userInterface } from "../../types";
 
 interface UserState {
-  currentUser: userInterface | null; // Define User interface for type safety
+  currentUser: userInterface | null;
   error: string | null;
   loading: boolean;
 }

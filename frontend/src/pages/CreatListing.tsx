@@ -10,7 +10,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { RootState } from "../redux/store";
+import { RootState } from "../APP/store";
 
 const CreatListing: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -183,9 +183,9 @@ const CreatListing: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-12 sm:gap-32">
       <Header />
-      <main className="p-3 max-w-4xl mx-auto">
+      <main className="p-5 max-w-4xl mx-auto bg-white rounded overflow-hidden shadow-lg">
         <h1 className="text-3xl font-semibold text-center my-7">
           Create a Listing
         </h1>
@@ -386,7 +386,7 @@ const CreatListing: React.FC = () => {
 
             <button
               disabled={loading || uploading}
-              className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+              className="p-3 bg-green-500 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
               {loading ? "Creating..." : "Create listing"}
             </button>

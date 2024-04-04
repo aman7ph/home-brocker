@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../APP/store";
 import {
   getDownloadURL,
   getStorage,
@@ -20,7 +20,7 @@ import {
   signOutUserStart,
   signOutUserSuccess,
   signOutUserFailure,
-} from "../redux/user/userSlice";
+} from "../APP/features/userSlice";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -178,10 +178,10 @@ const Profile: React.FC = () => {
       <Header />
       <div>
         <section>
-          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto mt-5 sm:mt-44 lg:py-0 overflow-hidden">
-            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-500 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto mt-5 sm:mt-32 lg:py-0 overflow-hidden">
+            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <h1 className="text-center	 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                <h1 className="text-center	 text-xl font-bold leading-tight tracking-tight ">
                   Profile
                 </h1>
                 <form
@@ -219,7 +219,7 @@ const Profile: React.FC = () => {
                   <div>
                     <label
                       htmlFor="username"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium "
                     >
                       username
                     </label>
@@ -229,14 +229,14 @@ const Profile: React.FC = () => {
                       name="username"
                       id="username"
                       defaultValue={currentUser?.username}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                       placeholder="Name"
                     ></input>
                   </div>
                   <div>
                     <label
                       htmlFor="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium "
                     >
                       Your email
                     </label>
@@ -246,7 +246,7 @@ const Profile: React.FC = () => {
                       name="email"
                       id="email"
                       defaultValue={currentUser?.email}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                       placeholder="name@company.com"
                     ></input>
                   </div>
@@ -254,7 +254,7 @@ const Profile: React.FC = () => {
                   <div>
                     <label
                       htmlFor="phoneNumber"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium "
                     >
                       Phone Number
                     </label>
@@ -264,7 +264,7 @@ const Profile: React.FC = () => {
                       type="text"
                       name="phoneNumber"
                       id="phoneNumber"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                       placeholder="0911 --- ---"
                     ></input>
                   </div>
@@ -272,7 +272,7 @@ const Profile: React.FC = () => {
                   <div>
                     <label
                       htmlFor="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium "
                     >
                       Password
                     </label>
@@ -282,43 +282,53 @@ const Profile: React.FC = () => {
                       name="password"
                       id="password"
                       placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                     ></input>
                   </div>
-
                   <button
                     disabled={loading}
                     type="submit"
-                    className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
                   >
                     {loading ? "Loading...." : "update"}
                   </button>
-                  {currentUser?.role === "admin" && (
-                    <Link
-                      to={"/creatlisting"}
-                      className="w-full text-white bg-primary-600 mt-5 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 text-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    >
-                      Creat Listing
-                    </Link>
-                  )}
+
+                  <div className="flex justify-between mt-4 gap-8">
+                    {currentUser?.role === "admin" && (
+                      <Link
+                        to={"/creatlisting"}
+                        className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
+                      >
+                        Creat Listing
+                      </Link>
+                    )}
+                    {currentUser?.role === "admin" && (
+                      <Link
+                        to={"/viewlisting"}
+                        className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
+                      >
+                        View Listing
+                      </Link>
+                    )}
+                  </div>
                 </form>
                 <p className="text-red-700 mt-5">{error ? error : ""}</p>
                 <p className="text-green-700 mt-5">
                   {updateSuccess ? "User is updated successfully!" : ""}
                 </p>
-                <div className="flex justify-between mt-5">
-                  <span
+                <div className="flex justify-between mt-4 gap-8">
+                  <button
                     onClick={handleDeletUser}
-                    className="text-red-700 cursor-pointer"
+                    className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-red-500 hover:text-white"
                   >
                     Delete account
-                  </span>
-                  <span
+                  </button>
+                  <button
                     onClick={handleSignOutUser}
-                    className="text-red-700 cursor-pointer"
+                    className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-red-500 hover:text-white"
                   >
                     Sign out
-                  </span>
+                  </button>
                 </div>
               </div>
             </div>
