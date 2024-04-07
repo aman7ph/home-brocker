@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { listingInterface } from "../types";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -12,9 +12,10 @@ import {
 import { app } from "../firebase";
 import { RootState } from "../APP/store";
 
-const CreatListing: React.FC = () => {
+const UpdateListing: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const params = useParams();
   const [error, setError] = useState<string | boolean>(false);
   const [loading, setLoading] = useState(false);
   const [imageState, setImageState] = useState<File[]>([]);
@@ -159,17 +160,20 @@ const CreatListing: React.FC = () => {
         return setError("Discount price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch("http://localhost:8080/api/listing/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser?._id,
-        }),
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/listing/update/${params.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser?._id,
+          }),
+        }
+      );
       const data = await res.json();
       setLoading(false);
       if (data.success === false) {
@@ -182,13 +186,26 @@ const CreatListing: React.FC = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    const getAlisting = async () => {
+      const listingId = params.id;
+      const res = await fetch(`/api/listing/getalisting/${listingId}`);
+      const data = await res.json();
+      if ((data.sucsess = false)) {
+        console.log(data.message);
+        return;
+      }
+      console.log(data);
+      setFormData(data);
+    };
+    getAlisting();
+  }, []);
   return (
     <div className="flex flex-col gap-12 sm:gap-32">
       <Header />
       <main className="p-5 max-w-4xl mx-auto bg-white rounded overflow-hidden shadow-lg">
         <h1 className="text-3xl font-semibold text-center my-7">
-          Create a Listing
+          Update a Listing
         </h1>
         <form
           onSubmit={handleSubmit}
@@ -389,7 +406,7 @@ const CreatListing: React.FC = () => {
               disabled={loading || uploading}
               className="p-3 bg-green-500 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              {loading ? "Creating..." : "Create listing"}
+              {loading ? "updating..." : "update listing"}
             </button>
             {error && <p className="text-red-700 text-sm">{error}</p>}
           </div>
@@ -399,4 +416,4 @@ const CreatListing: React.FC = () => {
   );
 };
 
-export default CreatListing;
+export default UpdateListing;

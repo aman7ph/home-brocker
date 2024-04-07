@@ -41,4 +41,5 @@ export interface listingInterface {
   offer: boolean;
   imageUrls: string[];
   userRef: string;
+  _id?: string;
 }

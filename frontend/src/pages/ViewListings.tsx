@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,14 +7,16 @@ import {
   getHouseStart,
   getHouseSuccess,
   getHouseFailure,
+  deleteHouseStart,
+  deleteHouseFailure,
 } from "../APP/features/houseSlice";
 
 const ViewListings: React.FC = () => {
+  const [stateTracker, setStateTracker] = useState<boolean>(false);
   const { houses, loading, error } = useSelector(
     (state: RootState) => state.houses
   );
   const dispatch = useDispatch();
-
   const getHouses = async () => {
     try {
       dispatch(getHouseStart());
@@ -34,11 +36,29 @@ const ViewListings: React.FC = () => {
       dispatch(getHouseFailure((error as Error).message));
     }
   };
+  const handleDelete = async (id: string) => {
+    try {
+      dispatch(deleteHouseStart());
+      const res = await fetch(
+        `http://localhost:8080/api/listing/delete/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteHouseFailure(data.message));
+      }
+      setStateTracker((prevState) => !prevState);
+    } catch (error: any) {
+      dispatch(deleteHouseFailure(error.message));
+    }
+  };
   useEffect(() => {
     getHouses();
-  }, []);
-  console.log(houses);
+  }, [stateTracker]);
 
   return (
     <div>
@@ -51,7 +71,9 @@ const ViewListings: React.FC = () => {
             </div>
           ) : (
             houses &&
-            houses.map((house, index) => <Card key={index} houses={house} />)
+            houses.map((house, index) => (
+              <Card key={index} houses={house} handleDelete={handleDelete} />
+            ))
           )}
         </main>
       </div>

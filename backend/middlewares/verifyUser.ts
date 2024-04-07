@@ -23,7 +23,6 @@ export const verifyToken = (
   jwt.verify(token, securityKey, (err: VerifyErrors | null, user: any) => {
     if (err) return next(errorHandler(403, "Forbidden"));
     req.user = user;
-    console.log(user);
     next();
   });
 };

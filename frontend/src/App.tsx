@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
 import CreatListing from "./pages/CreatListing";
 import ViewListings from "./pages/ViewListings";
+import UpdateListing from "./pages/UpdateListing";
 
 const routes: RouerInt[] = [
   {
@@ -45,6 +46,10 @@ const routes: RouerInt[] = [
       {
         path: "/viewlisting",
         element: <ViewListings />,
+      },
+      {
+        path: "/updatelisting/:id",
+        element: <UpdateListing />,
       },
     ],
   },

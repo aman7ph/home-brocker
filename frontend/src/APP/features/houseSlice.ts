@@ -29,10 +29,22 @@ const houseSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    deleteHouseStart: (state) => {
+      state.loading = true;
+    },
+    deleteHouseFailure: (state, action: { payload: string }) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
-export const { getHouseStart, getHouseSuccess, getHouseFailure } =
-  houseSlice.actions;
+export const {
+  getHouseStart,
+  getHouseSuccess,
+  getHouseFailure,
+  deleteHouseStart,
+  deleteHouseFailure,
+} = houseSlice.actions;
 
 export default houseSlice.reducer;

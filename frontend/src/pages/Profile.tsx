@@ -102,7 +102,6 @@ const Profile: React.FC = () => {
       setFile(null);
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -292,30 +291,30 @@ const Profile: React.FC = () => {
                   >
                     {loading ? "Loading...." : "update"}
                   </button>
-
-                  <div className="flex justify-between mt-4 gap-8">
-                    {currentUser?.role === "admin" && (
-                      <Link
-                        to={"/creatlisting"}
-                        className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
-                      >
-                        Creat Listing
-                      </Link>
-                    )}
-                    {currentUser?.role === "admin" && (
-                      <Link
-                        to={"/viewlisting"}
-                        className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
-                      >
-                        View Listing
-                      </Link>
-                    )}
-                  </div>
                 </form>
-                <p className="text-red-700 mt-5">{error ? error : ""}</p>
+
+                <p className="text-red-700 mt-5">{error ? error : ""} </p>
                 <p className="text-green-700 mt-5">
                   {updateSuccess ? "User is updated successfully!" : ""}
                 </p>
+                <div className="flex justify-between mt-4 gap-8">
+                  {currentUser?.role === "admin" && (
+                    <Link
+                      to={"/creatlisting"}
+                      className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
+                    >
+                      Creat Listing
+                    </Link>
+                  )}
+                  {currentUser?.role === "admin" && (
+                    <Link
+                      to={"/viewlisting"}
+                      className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-green-500 hover:text-white"
+                    >
+                      View Listing
+                    </Link>
+                  )}
+                </div>
                 <div className="flex justify-between mt-4 gap-8">
                   <button
                     onClick={handleDeletUser}
